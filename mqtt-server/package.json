@@ -1,0 +1,20 @@
+{
+  "name": "mqtt-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "dotenv": "^8.1.0",
+    "ip": "^1.1.5",
+    "mosca": "^2.8.3",
+    "mqtt": "^3.0.0",
+    "winston": "^3.2.1"
+  }
+}
