@@ -38,22 +38,30 @@ void setup() {
   client.setCallback(callback);
 }
 
+void charToString(char S[], String &D) {
+  String rc(S);
+  D = rc;
+}
+
 void callback(char* topic, byte* payload, unsigned int length) {
+  String payloadString = "";
   Serial.print("Payload received: ");
   
   for(int i=0; i<length; i++) {
     Serial.print((char)payload[i]);
+    payloadString += (char)payload[i];
   }
-
+  
   Serial.print(" on topic: ");
   Serial.println(topic);
+  Serial.println(payloadString);
 }
 
 void reconnect() {
   Serial.println("Connecting to MQTT Server...");
   
   while (!client.connected()) {
-    if (client.connect(cartIP)) { 
+    if (client.connect(cartIP)) {
       Serial.println("Connected to MQTT Server");
       client.subscribe(topic);
     }else {

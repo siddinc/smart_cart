@@ -84,14 +84,15 @@ void loop() {
   }
 
   double headingInRadians = magnetometerOutput(qmc);
-  
+  double headingInDegrees = (headingInRadians * 180) / PI;
   char payloadCharArray[20];
   dtostrf(headingInRadians, 0, 4, payloadCharArray);
-      
+
   client.publish(topic, payloadCharArray);
   
   Serial.print("Payload: ");
-  Serial.print(payloadCharArray);
+//  Serial.print(headingInRadians);
+  Serial.print(headingInDegrees);
   Serial.print(" published on topic: ");
   Serial.println(topic);
   
