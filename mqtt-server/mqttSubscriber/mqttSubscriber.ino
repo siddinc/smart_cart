@@ -1,5 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
+#include <SoftwareSerial.h>
 
 const String ssid = "Jarvis";
 const String password = "sidrox54";
@@ -16,9 +17,15 @@ IPAddress subnet(255, 255, 255, 0);
 
 WiFiClient esp8266Client;
 PubSubClient client(esp8266Client);
+SoftwareSerial NodeMCU(3,1);
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(4800);
+  NodeMCU.begin(4800);
+  
+  pinMode(3,INPUT);
+  pinMode(1,OUTPUT);
+  
   WiFi.mode(WIFI_STA);
   WiFi.config(ip, gateway, subnet);
   WiFi.begin(ssid, password);
@@ -38,11 +45,6 @@ void setup() {
   client.setCallback(callback);
 }
 
-void charToString(char S[], String &D) {
-  String rc(S);
-  D = rc;
-}
-
 void callback(char* topic, byte* payload, unsigned int length) {
   String payloadString = "";
   Serial.print("Payload received: ");
@@ -54,7 +56,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   
   Serial.print(" on topic: ");
   Serial.println(topic);
-  Serial.println(payloadString);
+  NodeMCU.println(payloadString);
 }
 
 void reconnect() {
