@@ -91,7 +91,7 @@ void loop() {
   client.publish(topic, payloadCharArray);
   
   Serial.print("Payload: ");
-//  Serial.print(headingInRadians);
+  //Serial.print(headingInRadians);
   Serial.print(headingInDegrees);
   Serial.print(" published on topic: ");
   Serial.println(topic);

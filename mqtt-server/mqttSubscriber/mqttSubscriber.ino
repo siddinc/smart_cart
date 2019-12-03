@@ -20,7 +20,7 @@ PubSubClient client(esp8266Client);
 SoftwareSerial NodeMCU(3,1);
 
 void setup() {
-  Serial.begin(4800);
+  Serial.begin(9600);
   NodeMCU.begin(4800);
   
   pinMode(3,INPUT);
@@ -56,7 +56,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
   
   Serial.print(" on topic: ");
   Serial.println(topic);
-  NodeMCU.println(payloadString);
+  NodeMCU.print(payloadString.toDouble());
+  NodeMCU.print("\n");
 }
 
 void reconnect() {
