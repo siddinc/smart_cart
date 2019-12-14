@@ -1,8 +1,5 @@
 #include <SoftwareSerial.h>
-#include <Wire.h>
-#include <MechaQMC5883.h>
-
-const double declinationAngle = 0.001164;
+SoftwareSerial ArduinoUno(0,1); // RX, TX NodeMCU RX--> TX   TX--> RX
 
 // Motor A (right motor)
 // in2 is forward
@@ -18,16 +15,9 @@ int enB = 3;
 int in3 = 5;
 int in4 = 4;
 
-SoftwareSerial ArduinoUno(0,1);
-MechaQMC5883 qmc;
-
-void setup(){
+void setup() {
   Serial.begin(9600);
   ArduinoUno.begin(4800);
-
-  Wire.begin(); //A4 --> SDA, A5 --> SCL
-  qmc.init();
-
   pinMode(enA, OUTPUT);
   pinMode(enB, OUTPUT);
   pinMode(in1, OUTPUT);
@@ -45,41 +35,14 @@ void setup(){
 }
 
 void loop() {
-   while(ArduinoUno.available()>0) {
-      float userDeflection = ArduinoUno.parseFloat();
-    
-      if(ArduinoUno.read()== '\n') {  
-        float relativeDeflection = userDeflection - readCartDeflection();
-      }
-   }
-}
 
-float magnetometerOutput(MechaQMC5883 qmc) {
-  int x, y, z;
-  float headingInRadians;
-  
-  qmc.read(&x,&y,&z);
-  
-  headingInRadians = atan2((double)x, (double)y) + declinationAngle;
-
-  if(headingInRadians < 0) {
-    headingInRadians += (2 * PI); 
+  while(ArduinoUno.available()>0){
+  float val = ArduinoUno.parseFloat();
+  if(ArduinoUno.read()== '\n'){
+  direction(val);
   }
-
-  if(headingInRadians > (2 * PI)) {
-    headingInRadians -= (2 * PI);
-  }
-
-  return headingInRadians;
 }
-
-float readCartDeflection() {
-  float headingInRadians = magnetometerOutput(qmc);
-  float headingInDegrees = (headingInRadians * 180) / PI;
-  
-  return headingInDegrees;
 }
-
 
 void forward(float speed) {
   analogWrite(enA, speed);
@@ -89,7 +52,7 @@ void forward(float speed) {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(1000);
+//  delay(1000);
 }
 
 void backward(float speed) {
@@ -100,7 +63,7 @@ void backward(float speed) {
   digitalWrite(in2, LOW);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  delay(1000);
+//  delay(1000);
 }
 
 void left(float speed) {
@@ -110,7 +73,7 @@ void left(float speed) {
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(1000);
+//  delay(1000);
 }
 
 void soft_left(float speedA, float speedB) {
@@ -121,7 +84,7 @@ void soft_left(float speedA, float speedB) {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(1000);
+//  delay(1000);
 }
 
 void right(float speed) {
@@ -131,7 +94,7 @@ void right(float speed) {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  delay(1000);
+//  delay(1000);
 }
 
 void soft_right(float speedA, float speedB) {
@@ -142,7 +105,7 @@ void soft_right(float speedA, float speedB) {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(1000);
+//  delay(1000);
 }
 
 void stop_motor() {
@@ -153,24 +116,27 @@ void stop_motor() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, LOW);
-  delay(1000);
+//  delay(1000);
 }
 
-void directions(float heading) {
-  if (heading > 338 || heading < 22) {
+void directions(float heading){
+  if (heading > 338 || heading < 22)
+  {
     Serial.println("NORTH");
   //digitalWrite(ledPins[0],HIGH);
-    forward(200);
+    forward();
   }
 
-  if (heading > 22 && heading < 68) {
+  if (heading > 22 && heading < 68)
+  {
     Serial.println("NORTH-EAST");
   //digitalWrite(ledPins[7],HIGH);
   soft_left(185,100);
 
   }
 
-  if (heading > 68 && heading < 113) {
+  if (heading > 68 && heading < 113)
+  {
     Serial.println("EAST");
    //    digitalWrite(ledPins[6],HIGH);
    left(185);
@@ -194,12 +160,14 @@ void directions(float heading) {
 //    digitalWrite(ledPins[3],HIGH);
 //  }
 
-  if (heading > 248 && heading < 293) {
+  if (heading > 248 && heading < 293)
+  {
     Serial.println("WEST");
     right(185);
   }
 
-  if (heading > 293 && heading < 338) {
+  if (heading > 293 && heading < 338)
+  {
     Serial.println("NORTH-WEST");
 //    digitalWrite(ledPins[1],HIGH);
   soft_right(100,185);
