@@ -25,7 +25,7 @@ void setup(){
   Serial.begin(9600);
   ArduinoUno.begin(4800);
 
-  Wire.begin(D1, D2); //SDA=D1 and SCL=D2
+  Wire.begin(18, 19); //SDA=D1 and SCL=D2
   qmc.init();
 
   pinMode(enA, OUTPUT);
