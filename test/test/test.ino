@@ -1,3 +1,6 @@
+#include <SoftwareSerial.h>
+SoftwareSerial ArduinoUno(0,1);
+
 // Motor A connections
 int enA = 9;
 int in1 = 8;
@@ -9,6 +12,9 @@ int in3 = 5;
 int in4 = 4;
 
 void setup() {
+  Serial.begin(9600);
+  ArduinoUno.begin(4800);
+  
   pinMode(enA, OUTPUT);
   pinMode(enB, OUTPUT);
   pinMode(in1, OUTPUT);
@@ -23,10 +29,18 @@ void setup() {
 }
 
 void loop() {
-  directionControl();
-  delay(1000);
-  speedControl();
-  delay(1000);
+//  directionControl();
+//  delay(1000);
+//  speedControl();
+//  delay(1000);
+
+  while(ArduinoUno.available()>0){
+    float val = ArduinoUno.parseFloat();
+    
+    if(ArduinoUno.read()== '\n'){
+      Serial.println(val);
+    }
+  }
 }
 
 void directionControl() {
