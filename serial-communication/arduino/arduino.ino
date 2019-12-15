@@ -45,7 +45,11 @@ void setup(){
 }
 
 void loop() {
-   while(ArduinoUno.available()>0) {
+  directionFromDeflection();
+}
+
+void directionFromDeflection() {
+  while(ArduinoUno.available()>0) {
       float userDeflection = ArduinoUno.parseFloat();
     
       if(ArduinoUno.read()== '\n') {  
@@ -71,27 +75,27 @@ void loop() {
 void computeDirection(float heading) {
   if(heading > 338 || heading < 22) {
     Serial.println("NORTH");
-    forward(185);
+    forward(150);
   }
 
   if(heading > 22 && heading < 68) {
     Serial.println("NORTH-EAST");
-    soft_right(185, 100);
+    soft_right(100, 125);
   }
 
   if(heading > 68 && heading < 113) {
     Serial.println("EAST");
-    right(185);
+    right(130);
   }
 
   if(heading > 248 && heading < 293) {
     Serial.println("WEST");
-    left(185);
+    left(125);
   }
 
   if(heading > 293 && heading < 338) {
     Serial.println("NORTH-WEST");
-    soft_left(100, 185);
+    soft_left(125, 110);
   }
 }
 
@@ -116,7 +120,7 @@ void forward(float speed) {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(250);
+  delay(70);
 }
 
 void backward(float speed) {
@@ -126,16 +130,27 @@ void backward(float speed) {
   digitalWrite(in2, LOW);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  delay(250);
+  delay(70);
 }
 
 void left(float speed) {
+  analogWrite(enA, speed);
+  analogWrite(enB, 0);
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, HIGH);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, LOW);
+  delay(70);
+}
+
+void right(float speed) {
+  analogWrite(enA, 0);
   analogWrite(enB, speed);
-  digitalWrite(in1, HIGH);
+  digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(250);
+  delay(70);
 }
 
 void soft_left(float speedA, float speedB) {
@@ -145,16 +160,7 @@ void soft_left(float speedA, float speedB) {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(250);
-}
-
-void right(float speed) {
-  analogWrite(enA, speed);
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, HIGH);
-  digitalWrite(in3, HIGH);
-  digitalWrite(in4, LOW);
-  delay(250);
+  delay(70);
 }
 
 void soft_right(float speedA, float speedB) {
@@ -164,7 +170,7 @@ void soft_right(float speedA, float speedB) {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(250);
+  delay(70);
 }
 
 void stop_motor() {
@@ -174,5 +180,5 @@ void stop_motor() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, LOW);
-  delay(250);
+  delay(70);
 }

@@ -96,5 +96,5 @@ void loop() {
   Serial.println(topic);
   
   client.loop();
-  delay(2000);
+  delay(1250);
 }

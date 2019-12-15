@@ -30,83 +30,55 @@ void setup() {
 }
 
 void loop() {
-  soft_left(175, 100);
-  stop_motor();
-  soft_right(100, 175);
-  stop_motor();
+  forward(150, 150);
 }
 
-void forward(float speed) {
-  analogWrite(enA, speed);
-  analogWrite(enB, speed);
-
+void forward(float speedA, float speedB) {
+  analogWrite(enA, speedA);
+  analogWrite(enB, speedB);
   digitalWrite(in1, LOW);
   digitalWrite(in2, HIGH);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(1000);
+  delay(4000);
 }
 
 void backward(float speed) {
   analogWrite(enA, speed);
   analogWrite(enB, speed);
-
   digitalWrite(in1, HIGH);
   digitalWrite(in2, LOW);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  delay(1000);
+  delay(250);
 }
 
-void left(float speed) {
-  analogWrite(enB, speed);
-
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, HIGH);
-  delay(1000);
-}
-
-void soft_left(float speedA, float speedB) {
+void left(float speedA, float speedB) {
   analogWrite(enA, speedA);
   analogWrite(enB, speedB);
-
   digitalWrite(in1, LOW);
   digitalWrite(in2, HIGH);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(1000);
+  delay(250);
 }
 
-void right(float speed) {
-  analogWrite(enA, speed);
-
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, HIGH);
-  digitalWrite(in3, HIGH);
-  digitalWrite(in4, LOW);
-  delay(1000);
-}
-
-void soft_right(float speedA, float speedB) {
+void right(float speedA, float speedB) {
   analogWrite(enA, speedA);
   analogWrite(enB, speedB);
-
   digitalWrite(in1, LOW);
   digitalWrite(in2, HIGH);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(1000);
+  delay(250);
 }
 
 void stop_motor() {
   analogWrite(enA, 0);
   analogWrite(enB, 0);
-  
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, LOW);
-  delay(1000);
+  delay(250);
 }
