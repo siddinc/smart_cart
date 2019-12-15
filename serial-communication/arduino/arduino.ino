@@ -59,8 +59,10 @@ void loop() {
           relativeDeflection -= (360);
         }
 
+        Serial.print("Deflection: ");
         Serial.print(relativeDeflection);
         Serial.print(" - ");
+        Serial.print("Direction: ");
         computeDirection(relativeDeflection);
       }
    }
@@ -74,7 +76,7 @@ void computeDirection(float heading) {
 
   if(heading > 22 && heading < 68) {
     Serial.println("NORTH-EAST");
-    soft_right(185,100);
+    soft_right(185, 100);
   }
 
   if(heading > 68 && heading < 113) {
@@ -89,98 +91,88 @@ void computeDirection(float heading) {
 
   if(heading > 293 && heading < 338) {
     Serial.println("NORTH-WEST");
-    soft_left(100,185);
-  }  
+    soft_left(100, 185);
+  }
 }
 
 double magnetometerOutput(MechaQMC5883 qmc) {
   int x, y, z;
-  double headingInRadians;
-  
+
   qmc.read(&x,&y,&z);
-  headingInRadians = atan2((double)x, (double)y) + declinationAngle;
-  
+  double headingInRadians = atan2((double)x, (double)y) + declinationAngle;  
   return headingInRadians;
 }
 
 float readCartDeflection() {
   float headingInRadians = (float)magnetometerOutput(qmc);
   float headingInDegrees = (headingInRadians * 180) / PI;
-  
   return headingInDegrees;
 }
 
 void forward(float speed) {
   analogWrite(enA, speed);
   analogWrite(enB, speed);
-
   digitalWrite(in1, LOW);
   digitalWrite(in2, HIGH);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(1000);
+  delay(250);
 }
 
 void backward(float speed) {
   analogWrite(enA, speed);
   analogWrite(enB, speed);
-
   digitalWrite(in1, HIGH);
   digitalWrite(in2, LOW);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  delay(1000);
+  delay(250);
 }
 
 void left(float speed) {
   analogWrite(enB, speed);
-
   digitalWrite(in1, HIGH);
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(1000);
+  delay(250);
 }
 
 void soft_left(float speedA, float speedB) {
   analogWrite(enA, speedA);
   analogWrite(enB, speedB);
-
   digitalWrite(in1, LOW);
   digitalWrite(in2, HIGH);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(1000);
+  delay(250);
 }
 
 void right(float speed) {
   analogWrite(enA, speed);
-
   digitalWrite(in1, LOW);
   digitalWrite(in2, HIGH);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  delay(1000);
+  delay(250);
 }
 
 void soft_right(float speedA, float speedB) {
   analogWrite(enA, speedA);
   analogWrite(enB, speedB);
-
   digitalWrite(in1, LOW);
   digitalWrite(in2, HIGH);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(1000);
+  delay(250);
 }
 
 void stop_motor() {
   analogWrite(enA, 0);
   analogWrite(enB, 0);
-  
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, LOW);
-  delay(1000);
+  delay(250);
 }
