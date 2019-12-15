@@ -50,36 +50,65 @@ void loop() {
     
       if(ArduinoUno.read()== '\n') {  
         float relativeDeflection = userDeflection - readCartDeflection();
+        
+        if(relativeDeflection < 0) {
+          relativeDeflection += (360);
+        }
+
+        if(relativeDeflection > (360)) {
+          relativeDeflection -= (360);
+        }
+
+        Serial.print(relativeDeflection);
+        Serial.print(" - ");
+        computeDirection(relativeDeflection);
       }
    }
 }
 
-float magnetometerOutput(MechaQMC5883 qmc) {
+void computeDirection(float heading) {
+  if(heading > 338 || heading < 22) {
+    Serial.println("NORTH");
+    forward(185);
+  }
+
+  if(heading > 22 && heading < 68) {
+    Serial.println("NORTH-EAST");
+    soft_right(185,100);
+  }
+
+  if(heading > 68 && heading < 113) {
+    Serial.println("EAST");
+    right(185);
+  }
+
+  if(heading > 248 && heading < 293) {
+    Serial.println("WEST");
+    left(185);
+  }
+
+  if(heading > 293 && heading < 338) {
+    Serial.println("NORTH-WEST");
+    soft_left(100,185);
+  }  
+}
+
+double magnetometerOutput(MechaQMC5883 qmc) {
   int x, y, z;
-  float headingInRadians;
+  double headingInRadians;
   
   qmc.read(&x,&y,&z);
-  
   headingInRadians = atan2((double)x, (double)y) + declinationAngle;
-
-  if(headingInRadians < 0) {
-    headingInRadians += (2 * PI); 
-  }
-
-  if(headingInRadians > (2 * PI)) {
-    headingInRadians -= (2 * PI);
-  }
-
+  
   return headingInRadians;
 }
 
 float readCartDeflection() {
-  float headingInRadians = magnetometerOutput(qmc);
+  float headingInRadians = (float)magnetometerOutput(qmc);
   float headingInDegrees = (headingInRadians * 180) / PI;
   
   return headingInDegrees;
 }
-
 
 void forward(float speed) {
   analogWrite(enA, speed);
@@ -154,54 +183,4 @@ void stop_motor() {
   digitalWrite(in3, LOW);
   digitalWrite(in4, LOW);
   delay(1000);
-}
-
-void directions(float heading) {
-  if (heading > 338 || heading < 22) {
-    Serial.println("NORTH");
-  //digitalWrite(ledPins[0],HIGH);
-    forward(200);
-  }
-
-  if (heading > 22 && heading < 68) {
-    Serial.println("NORTH-EAST");
-  //digitalWrite(ledPins[7],HIGH);
-  soft_left(185,100);
-
-  }
-
-  if (heading > 68 && heading < 113) {
-    Serial.println("EAST");
-   //    digitalWrite(ledPins[6],HIGH);
-   left(185);
-  }
-
-//  if (heading > 113 && heading < 158)
-//  {
-//    Serial.println("SOUTH-EAST");
-//    digitalWrite(ledPins[5],HIGH);
-//  }
-//
-//  if (heading > 158 && heading < 203)
-//  {
-//    Serial.println("SOUTH");
-//    digitalWrite(ledPins[4],HIGH);
-//  }
-//
-//  if (heading > 203 && heading < 248)
-//  {
-//    Serial.println("SOTUH-WEST");
-//    digitalWrite(ledPins[3],HIGH);
-//  }
-
-  if (heading > 248 && heading < 293) {
-    Serial.println("WEST");
-    right(185);
-  }
-
-  if (heading > 293 && heading < 338) {
-    Serial.println("NORTH-WEST");
-//    digitalWrite(ledPins[1],HIGH);
-  soft_right(100,185);
-  }  
 }

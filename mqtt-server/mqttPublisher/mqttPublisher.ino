@@ -83,8 +83,8 @@ void loop() {
     reconnect();
   }
 
-  double headingInRadians = magnetometerOutput(qmc);
-  double headingInDegrees = (headingInRadians * 180) / PI;
+  float headingInRadians = (float)magnetometerOutput(qmc);
+  float headingInDegrees = (headingInRadians * 180) / PI;
   char payloadCharArray[20];
   dtostrf(headingInDegrees, 6, 2, payloadCharArray);
 

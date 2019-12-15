@@ -1,5 +1,5 @@
 #include <SoftwareSerial.h>
-SoftwareSerial ArduinoUno(0,1); // RX, TX NodeMCU RX--> TX   TX--> RX
+SoftwareSerial ArduinoUno(0,1);
 
 // Motor A (right motor)
 // in2 is forward
