@@ -32,15 +32,15 @@ server.on('clientDisconnected', client => {
 });
 
 server.on('published', (packet, client) => {
-  if(packet.topic === RFIDTopic) {
-    const itemID = String(packet.payload);
+  // if(packet.topic === RFIDTopic) {
+  //   const itemID = String(packet.payload);
 
-    axios.post(nodejsServerURL, { itemID, topic: packet.topic })
-      .then(resp => logger.info(resp.data))
-      .catch(error => {
-        logger.error(error.message);
-      });
-  }
+  //   axios.post(nodejsServerURL, { itemID, topic: packet.topic })
+  //     .then(resp => logger.info(resp.data))
+  //     .catch(error => {
+  //       logger.error(error.message);
+  //     });
+  // }
 
   return logger.verbose(`Payload: ${packet.payload} published on topic: ${packet.topic}`);
 });
