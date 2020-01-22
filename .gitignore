@@ -1,7 +1,5 @@
 mqtt-server/yarn.lock
 mqtt-server/node_modules
-mqtt-server/.env.development
 
 nodejs-server/yarn.lock
 nodejs-server/node_modules
-nodejs-server/.env.development
