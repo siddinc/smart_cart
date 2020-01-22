@@ -35,13 +35,13 @@ void setup() {
 }
 
 void loop() {
-
-  while(ArduinoUno.available()>0){
-  float val = ArduinoUno.parseFloat();
-  if(ArduinoUno.read()== '\n'){
-  direction(val);
+  while(ArduinoUno.available()>0) {
+    float val = ArduinoUno.parseFloat();
+    
+    if(ArduinoUno.read()== '\n') {
+      direction(val);
+    }
   }
-}
 }
 
 void forward(float speed) {
@@ -119,27 +119,20 @@ void stop_motor() {
 //  delay(1000);
 }
 
-void directions(float heading){
-  if (heading > 338 || heading < 22)
-  {
+void directions(float heading) {
+  if(heading > 338 || heading < 22) {
     Serial.println("NORTH");
-  //digitalWrite(ledPins[0],HIGH);
     forward();
   }
 
-  if (heading > 22 && heading < 68)
-  {
+  if(heading > 22 && heading < 68) {
     Serial.println("NORTH-EAST");
-  //digitalWrite(ledPins[7],HIGH);
-  soft_left(185,100);
-
+    soft_left(185,100);
   }
 
-  if (heading > 68 && heading < 113)
-  {
+  if(heading > 68 && heading < 113) {
     Serial.println("EAST");
-   //    digitalWrite(ledPins[6],HIGH);
-   left(185);
+    left(185);
   }
 
 //  if (heading > 113 && heading < 158)
@@ -160,16 +153,13 @@ void directions(float heading){
 //    digitalWrite(ledPins[3],HIGH);
 //  }
 
-  if (heading > 248 && heading < 293)
-  {
+  if(heading > 248 && heading < 293) {
     Serial.println("WEST");
     right(185);
   }
 
-  if (heading > 293 && heading < 338)
-  {
+  if(heading > 293 && heading < 338) {
     Serial.println("NORTH-WEST");
-//    digitalWrite(ledPins[1],HIGH);
-  soft_right(100,185);
+    soft_right(100,185);
   }  
 }
