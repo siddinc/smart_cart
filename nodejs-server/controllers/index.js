@@ -28,39 +28,32 @@ module.exports = {
 	stopCart: async (req, res, next) => {
 		const { isStop } = req.body;
 
-		if (isStop === true) {
-			const req = await axios.post('cart_nodemcu_url', { isStop: 1 });
-			return res.status(201).send({
-				status: res.statusCode,
-				message: 'Cart stopped successfully.',
-			});
+		switch (isStop) {
+			case 1: {
+				// const req = await axios.post('cart_nodemcu_url', { isStop: 1 });
+				return res.status(201).send({
+					status: res.statusCode,
+					message: 'Cart stopped successfully.',
+				});
+			}
+
+			case 0: {
+				// const req = await axios.post('cart_nodemcu_url', { isStop: 0 });
+				return res.status(201).send({
+					status: res.statusCode,
+					message: 'Cart started successfully.',
+				});
+			}
+
+			default: {
+				return res.status(400).send({
+					error: {
+						status: res.statusCode,
+						message: 'Incorrect isStop value.',
+					},
+				});
+			}
 		}
-
-		return res.status(400).send({
-			error: {
-				status: res.statusCode,
-				message: 'Incorrect isStop value.',
-			},
-		});
-	},
-
-	startCart: async (req, res, next) => {
-		const { isStart } = req.body;
-
-		if (isStart === true) {
-			const req = await axios.post('cart_nodemcu_url', { isStop: 0 });
-			return res.status(201).send({
-				status: res.statusCode,
-				message: 'Cart started successfully.',
-			});
-		}
-
-		return res.status(400).send({
-			error: {
-				status: res.statusCode,
-				message: 'Incorrect isStart value.',
-			},
-		});
 	},
 
 	postItem: async (req, res, next) => {
@@ -100,8 +93,8 @@ module.exports = {
 		const { emailID } = req.body;
 		let user = await User.findOne({ emailID }).populate({
 			path: 'items',
-      model: 'Item',
-      select: {_id: 0, __v: 0, createdAt: 0, updatedAt: 0}
+			model: 'Item',
+			select: { _id: 0, __v: 0, createdAt: 0, updatedAt: 0 },
 		});
 
 		if (user === null) {
@@ -111,14 +104,14 @@ module.exports = {
 					message: 'User not found.',
 				},
 			});
-    }
-    
-    res.status(200).send({
+		}
+
+		res.status(200).send({
 			status: res.statusCode,
-      message: 'Items retrieved successfully.',
-      data: {
-       items: user.items 
-      }
+			message: 'Items retrieved successfully.',
+			data: {
+				items: user.items,
+			},
 		});
 	},
 };

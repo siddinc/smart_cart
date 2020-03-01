@@ -1,4 +1,3 @@
-const app = require("express")();
 const mongoose = require("mongoose");
 const User = require("../models/user");
 const Item = require("../models/item");
