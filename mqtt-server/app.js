@@ -1,10 +1,9 @@
 'use strict';
 
-const axios = require('axios');
 const ip = require('ip');
 const mosca = require('mosca');
 
-const { mqttServerPort, nodejsServerURL, RFIDTopic } = require('./config/index');
+const { mqttServerPort } = require('./config/index');
 const { logger } = require('./utils/logger');
 const mqttServerIP = ip.address();
 
@@ -23,7 +22,7 @@ server.on('ready', () => {
   });
 });
 
-server.on('clientConnected', client => {
+server.on('clientConnected', async client => {
   return logger.info(`Client connected: ${client.id}`);
 });
 
@@ -32,15 +31,9 @@ server.on('clientDisconnected', client => {
 });
 
 server.on('published', (packet, client) => {
-  // if(packet.topic === RFIDTopic) {
-  //   const itemID = String(packet.payload);
-
-  //   axios.post(nodejsServerURL, { itemID, topic: packet.topic })
-  //     .then(resp => logger.info(resp.data))
-  //     .catch(error => {
-  //       logger.error(error.message);
-  //     });
-  // }
+  if (packet.topic.slice(0, 4) === 'cart') {
+    return logger.silly(`Payload: ${packet.payload} published on topic: ${packet.topic}`);
+  }
 
   return logger.verbose(`Payload: ${packet.payload} published on topic: ${packet.topic}`);
 });

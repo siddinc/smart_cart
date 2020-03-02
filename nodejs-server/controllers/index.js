@@ -1,28 +1,31 @@
 'use strict';
 
 const axios = require('axios');
-const User = require('../models/user');
+const mqtt = require('mqtt');
+const Cart = require('../models/cart');
 const Item = require('../models/item');
+const { publishCartDetails } = require('../utils/utils');
 
 module.exports = {
-	createUser: async (req, res, next) => {
-		const { emailID, password } = req.body;
-		let user = await User.findOne({ emailID });
+  signIn: async (req, res, next) => {
+    const { cartID } = req.body;
+    let cart = await Cart.findOne({ cartID });
 
-		if (user) {
-			return res.status(409).send({
+		if (cart === null) {
+			return res.status(404).send({
 				error: {
 					status: res.statusCode,
-					message: 'User already exists.',
+					message: 'Cart not found.',
 				},
 			});
-		}
+    }
 
-		let newUser = await User.create({ emailID, password });
-		res.status(201).send({
-			status: res.statusCode,
-			message: 'New user created successfully.',
-		});
+    publishCartDetails(cartID, cart.cartIP);
+
+    res.status(200).send({
+      status: res.statusCode,
+      message: 'Logged in successfully.',
+    });
 	},
 
 	stopCart: async (req, res, next) => {
@@ -31,7 +34,7 @@ module.exports = {
 		switch (isStop) {
 			case 1: {
 				// const req = await axios.post('cart_nodemcu_url', { isStop: 1 });
-				return res.status(201).send({
+				return res.status(200).send({
 					status: res.statusCode,
 					message: 'Cart stopped successfully.',
 				});
@@ -39,7 +42,7 @@ module.exports = {
 
 			case 0: {
 				// const req = await axios.post('cart_nodemcu_url', { isStop: 0 });
-				return res.status(201).send({
+				return res.status(200).send({
 					status: res.statusCode,
 					message: 'Cart started successfully.',
 				});
@@ -57,14 +60,14 @@ module.exports = {
 	},
 
 	postItem: async (req, res, next) => {
-		const { itemID, emailID } = req.body;
-		let user = await User.findOne({ emailID });
+		const { cartID } = req.body;
+		let cart = await Cart.findOne({ cartID });
 
-		if (user === null) {
+		if (cart === null) {
 			return res.status(404).send({
 				error: {
 					status: res.statusCode,
-					message: 'User not found.',
+					message: 'Cart not found.',
 				},
 			});
 		}
@@ -80,8 +83,8 @@ module.exports = {
 			});
 		}
 
-		user.items.push(item);
-		user = await user.save();
+		cart.items.push(item);
+		cart = await cart.save();
 
 		res.status(201).send({
 			status: res.statusCode,
@@ -90,18 +93,18 @@ module.exports = {
 	},
 
 	getItems: async (req, res, next) => {
-		const { emailID } = req.body;
-		let user = await User.findOne({ emailID }).populate({
+		const { cartID } = req.body;
+		let cart = await Cart.findOne({ cartID }).populate({
 			path: 'items',
 			model: 'Item',
 			select: { _id: 0, __v: 0, createdAt: 0, updatedAt: 0 },
 		});
 
-		if (user === null) {
+		if (cart === null) {
 			return res.status(404).send({
 				error: {
 					status: res.statusCode,
-					message: 'User not found.',
+					message: 'Cart not found.',
 				},
 			});
 		}
@@ -110,8 +113,8 @@ module.exports = {
 			status: res.statusCode,
 			message: 'Items retrieved successfully.',
 			data: {
-				items: user.items,
+				items: cart.items,
 			},
 		});
-	},
+  },
 };

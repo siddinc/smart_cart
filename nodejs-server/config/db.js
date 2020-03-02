@@ -3,7 +3,6 @@
 const mongoose = require('mongoose');
 const { dbConnectionURL } = require('./index');
 
-// mongoose.set('useFindAndModify', false);
 // mongoose.set('debug', true);
 mongoose.set('useCreateIndex', true);
 

@@ -11,8 +11,6 @@ if (parsedEnv.error) {
 
 const config = {
   mqttServerPort: Number(process.env.MQTT_SERVER_PORT),
-  nodejsServerURL: process.env.NODEJS_SERVER_URL,
-  RFIDTopic: process.env.RFID_TOPIC,
 };
 
 module.exports = config;
