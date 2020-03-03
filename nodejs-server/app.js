@@ -22,6 +22,26 @@ app.use(morgan('dev'));
 // api routes
 app.use('/api', router);
 
+// 404 resource not found
+app.use('*', (req, res, next) => {
+  return res.status(404).send({
+    error: {
+      status: res.statusCode,
+      message: 'Resource not found',
+    },
+  });
+});
+
+// custom error handler
+app.use((err, req, res, next) => {
+  return res.status(500 || err.status).send({
+    error: {
+      status: 500 || err.status,
+      message: err.message,
+    },
+  });
+});
+
 async function main() {
   const dbConn = await dbConnection();
 

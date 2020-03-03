@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const itemSchema = new mongoose.Schema(
 	{
-		itemID: {
+		itemId: {
 			type: String,
 			required: true,
 			unique: true,
@@ -25,6 +25,10 @@ const itemSchema = new mongoose.Schema(
 		},
 		nutritionalInformation: {
 			type: String,
+			default: undefined,
+		},
+		image: {
+			type: Array,
 			default: undefined,
 		},
 	},
