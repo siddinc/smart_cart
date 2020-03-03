@@ -56,10 +56,10 @@ async function main() {
     });
   }
 
-  app.listen(httpServerPort, () => {
+  app.listen(process.env.PORT || 3000, () => {
     console.log({
       status: 'HTTP server listening',
-      port: httpServerPort,
+      port: process.env.PORT || 3000,
       host: httpServerIP,
     });
   });
