@@ -9,8 +9,13 @@ const cartSchema = new mongoose.Schema(
 		},
 		userEmail: {
 			type: String,
-			unique: true,
+			// unique: true,
 			// required: true,
+		},
+		taken: {
+			type: Boolean,
+			// required: true,
+			default: false,
 		},
 		items: [
 			{

@@ -21,7 +21,6 @@ module.exports = {
       });
     }
 
-    let newUser = await User.create({ email, password });
     let cart = await Cart.findOne({ cartId });
 
     if (!cart) {
@@ -33,9 +32,20 @@ module.exports = {
       });
     }
 
+    if(cart.taken) {
+      return res.status(409).send({
+        error: {
+          status: res.statusCode,
+          message: 'Cart is already taken.',
+        },
+      });
+    }
+
+    let newUser = await User.create({ email, password });
     newUser.cartId = cartId;
     newUser = await newUser.save();
     cart.userEmail = email;
+    cart.taken = true;
     cart = await cart.save();
 
     // publishCartDetails(cartID, cart.cartIP);

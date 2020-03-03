@@ -23,7 +23,8 @@ const seed = async () => {
     // return await Item.create(items);
     for(let i=0; i<10; i++) {
       await Cart.create({
-        cartId: generateRandomUuid()
+        cartId: generateRandomUuid(),
+        taken: false
       });
     }
     return 1;

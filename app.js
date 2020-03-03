@@ -4,7 +4,6 @@ const app = require('express')();
 const bodyParser = require('body-parser');
 const ip = require('ip');
 const morgan = require('morgan');
-
 const dbConnection = require('./config/db');
 const { httpServerPort } = require('./config/index');
 const router = require('./routes/index');
@@ -18,8 +17,6 @@ app.use(bodyParser.json());
 
 // morgan
 app.use(morgan('dev'));
-
-// app.get('/hello', (req, res, next) => res.send({message: "world"}));
 
 // api routes
 app.use('/api', router);
@@ -56,11 +53,10 @@ async function main() {
     });
   }
 
-  app.listen(process.env.PORT || 3000, () => {
-    console.log("hello");
+  app.listen(httpServerPort, () => {
     console.log({
       status: 'HTTP server listening',
-      port: process.env.PORT || 3000,
+      port: httpServerPort,
       host: httpServerIP,
     });
   });
