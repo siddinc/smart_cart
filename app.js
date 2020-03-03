@@ -57,6 +57,7 @@ async function main() {
   }
 
   app.listen(process.env.PORT || 3000, () => {
+    console.log("hello");
     console.log({
       status: 'HTTP server listening',
       port: process.env.PORT || 3000,
