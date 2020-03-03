@@ -19,6 +19,8 @@ app.use(bodyParser.json());
 // morgan
 app.use(morgan('dev'));
 
+app.get('/hello', (req, res, next) => res.send({message: "hello from server"}));
+
 // api routes
 app.use('/api', router);
 
@@ -54,7 +56,7 @@ async function main() {
     });
   }
 
-  app.listen(httpServerPort, () => {
+  app.listen(3000, () => {
     console.log({
       status: 'HTTP server listening',
       port: httpServerPort,

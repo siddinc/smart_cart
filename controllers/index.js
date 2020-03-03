@@ -8,53 +8,20 @@ const User = require('../models/user');
 const { publishCartDetails, createJwt } = require('../utils/utils');
 
 module.exports = {
-  // signUp: async (req, res, next) => {
-  //   const { email, password, cartId } = req.body;
-  //   const user = await User.findOne({ email });
-
-  //   if(user) {
-  //     return res.status(409).send({
-  //       error: {
-  //         status: res.statusCode,
-  //         message: 'User already exists.',
-  //       },
-  //     });
-  //   }
-
-  //   const token = await createJwt({ email });
-  //   const newUser = await User.create({ email, password });
-
-  //   return res.status(200).send({
-  //     status: res.statusCode,
-  //     message: 'New user created successfully.',
-  //     data: {
-  //       token,
-  //     },
-  //   });
-  // },
-
   signIn: async (req, res, next) => {
     const { email, password, cartId } = req.body;
-    let user = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-    if(!user) {
-      return res.status(404).send({
+    if(user) {
+      return res.status(409).send({
         error: {
           status: res.statusCode,
-          message: 'User does not exist.',
+          message: 'User already exists.',
         },
       });
     }
 
-    if(password !== user.password) {
-      return res.status(400).send({
-        error: {
-          status: res.statusCode,
-          message: 'Invalid password. Please enter valid password again.',
-        },
-      });
-    }
-
+    let newUser = await User.create({ email, password });
     let cart = await Cart.findOne({ cartId });
 
     if (!cart) {
@@ -66,16 +33,21 @@ module.exports = {
       });
     }
 
-    user.cartId = cartId;
-    user = await user.save();
+    newUser.cartId = cartId;
+    newUser = await newUser.save();
     cart.userEmail = email;
     cart = await cart.save();
 
     // publishCartDetails(cartID, cart.cartIP);
 
+    const token = await createJwt({ email, cartId });
+
     res.status(200).send({
       status: res.statusCode,
       message: 'Logged in successfully.',
+      data: {
+        token,
+      },
     });
   },
 
