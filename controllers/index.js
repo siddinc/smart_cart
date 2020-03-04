@@ -183,9 +183,9 @@ module.exports = {
 
     res.status(200).send({
       status: res.statusCode,
-      message: `Items retrieved successfully ${cart.userEmail}.`,
+      message: `Item deleted successfully for ${cart.userEmail}.`,
       data: {
-        items: cart.items,
+        itemsRemaining: cart.items,
       },
     });
   },
