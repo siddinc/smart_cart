@@ -10,7 +10,7 @@ router.post('/sign_in', verifyAuthentication, signIn);
 
 router.post('/stop_cart', verifyAuthentication, stopCart);
 
-// router.post('/post_item', verifyAuthentication, postItem);
+router.post('/post_item', verifyAuthentication, postItem);
 
 router.post('/get_items', verifyAuthentication, getItems);
 
