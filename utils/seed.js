@@ -21,16 +21,15 @@ const items = [
 const seed = async () => {
   try {
     // return await Item.create(items);
-    for(let i=0; i<10; i++) {
+    for(let i=0; i<3; i++) {
       cart = Cart.create({
         cartId: generateRandomUuid(),
         taken: false
       });
-      console.log(cart);
     }
   } catch(error) {
     console.log(error);
   }
 }
 
-// seed();
+seed().then(() => console.log(1));

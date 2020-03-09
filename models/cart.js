@@ -7,8 +7,9 @@ const cartSchema = new mongoose.Schema(
 			unique: true,
 			required: true,
 		},
-		userEmail: {
-			type: String,
+		userMobile: {
+      type: String,
+      default: undefined,
 			// unique: true,
 			// required: true,
 		},
@@ -17,13 +18,7 @@ const cartSchema = new mongoose.Schema(
 			// required: true,
 			default: false,
 		},
-		items: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: 'Item',
-				default: undefined,
-			},
-		],
+		items: ['Item'],
 	},
 	{ timestamps: true }
 );

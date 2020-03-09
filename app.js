@@ -2,7 +2,7 @@ const { httpServer } = require('./httpServer');
 const { mqttServer } = require('./mqttServer');
 
 async function main() {
-  await mqttServer();
+  // await mqttServer();
   await httpServer();
 }
 

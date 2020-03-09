@@ -3,12 +3,12 @@
 const Cart = require('../models/cart');
 const Item = require('../models/item');
 const User = require('../models/user');
-const { publishCartDetails, createJwt } = require('../utils/utils');
+const { createJwt, publishStopStatus } = require('../utils/utils');
 
 module.exports = {
-  signIn: async (req, res, next) => {
-    const { email, password, cartId } = req.body;
-    const user = await User.findOne({ email });
+  signIn: async (req, res, next) => { // mobile, cartId
+    const { mobile, cartId } = req.body;
+    let user = await User.findOne({ mobile });
 
     if(user) {
       return res.status(409).send({
@@ -25,7 +25,7 @@ module.exports = {
       return res.status(404).send({
         error: {
           status: res.statusCode,
-          message: 'Cart not found.',
+          message: 'Cart does not exist.',
         },
       });
     }
@@ -39,42 +39,30 @@ module.exports = {
       });
     }
 
-    let newUser = await User.create({ email, password });
+    let newUser = await User.create({ mobile });
     newUser.cartId = cartId;
     newUser = await newUser.save();
-    cart.userEmail = email;
+    cart.userMobile = mobile;
     cart.taken = true;
     cart = await cart.save();
 
-    // publishCartDetails(cartID, cart.cartIP);
-
-    const token = await createJwt({ email, cartId });
+    const token = await createJwt({ mobile, cartId });
 
     res.status(200).send({
       status: res.statusCode,
-      message: 'Logged in successfully.',
+      message: 'Signed in successfully.',
       data: {
         token,
       },
     });
   },
 
-  stopCart: async (req, res, next) => {
-    const { isStop, email } = req.body;
-    const cart = await Cart.findOne({ userEmail: email });
-
-    if(!cart) {
-      return res.status(404).send({
-        error: {
-          status: res.statusCode,
-          message: 'User cart does not exist.',
-        },
-      });
-    }
+  stopCart: async (req, res, next) => { // mobile, isStop
+    const { isStop } = req.body;
 
     switch (isStop) {
       case 1: {
-        // const req = await axios.post('cart_nodemcu_url', { isStop: 1 });
+        publishStopStatus(res.locals.user.cartId, 1);
         return res.status(200).send({
           status: res.statusCode,
           message: 'Cart stopped successfully.',
@@ -82,7 +70,7 @@ module.exports = {
       }
 
       case 0: {
-        // const req = await axios.post('cart_nodemcu_url', { isStop: 0 });
+        publishStopStatus(res.locals.user.cartId, 0);
         return res.status(200).send({
           status: res.statusCode,
           message: 'Cart started successfully.',
@@ -100,26 +88,16 @@ module.exports = {
     }
   },
 
-  postItem: async (req, res, next) => {
-    const { email, itemId } = req.body;
-    let cart = await Cart.findOne({ userEmail: email });
-
-    if (!cart) {
-      return res.status(404).send({
-        error: {
-          status: res.statusCode,
-          message: 'User cart not found.',
-        },
-      });
-    }
-
+  postItem: async (req, res, next) => { // cartId, itemId
+    const { cartId, itemId } = req.body;
+    let cart = await Cart.findOne({ cartId });
     let item = await Item.findOne({ itemId });
 
     if (!item) {
       return res.status(404).send({
         error: {
           status: res.statusCode,
-          message: 'Item not found.',
+          message: 'Item does not exist.',
         },
       });
     }
@@ -134,45 +112,32 @@ module.exports = {
   },
 
   getItems: async (req, res, next) => {
-    const { email } = req.body;
-    let cart = await Cart.findOne({ userEmail: email }).populate({
-      path: 'items',
-      model: 'Item',
-      select: { _id: 0, __v: 0, createdAt: 0, updatedAt: 0 },
-    });
+    let cart = await Cart.findOne({ cartId: res.locals.user.cartId })
 
-    if (!cart) {
-      return res.status(404).send({
-        error: {
-          status: res.statusCode,
-          message: 'User cart not found.',
-        },
-      });
+    if(cart.items.length === 0) {
+      return res.status(200).send({
+        status: res.statusCode,
+        message: `No items present in cart.`,
+      });  
     }
 
     res.status(200).send({
       status: res.statusCode,
-      message: `Items retrieved successfully for ${cart.userEmail}.`,
+      message: `Items present in cart retrieved successfully.`,
       data: {
         items: cart.items,
       },
     });
   },
 
-  deleteItem: async (req, res, next) => {
-    const { email, itemId } = req.body;
-    let cart = await Cart.findOne({ userEmail: email }).populate({
-      path: 'items',
-      model: 'Item',
-      select: { _id: 0, __v: 0, createdAt: 0, updatedAt: 0 },
-    });
+  deleteItem: async (req, res, next) => { // mobile, itemId
+    const { itemId } = req.body;
+    let cart = await Cart.findOne({ cartId: res.locals.user.cartId })
 
-    if (!cart) {
-      return res.status(404).send({
-        error: {
-          status: res.statusCode,
-          message: 'User cart not found.',
-        },
+    if(cart.items.length === 0) {
+      return res.status(200).send({
+        status: res.statusCode,
+        message: `No items present in cart.`,
       });
     }
 
@@ -181,10 +146,7 @@ module.exports = {
 
     res.status(200).send({
       status: res.statusCode,
-      message: `Item deleted successfully for ${cart.userEmail}.`,
-      data: {
-        itemsRemaining: cart.items,
-      },
+      message: `Item deleted successfully.`,
     });
   },
 };

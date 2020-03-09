@@ -33,6 +33,11 @@ module.exports = {
 		});
 
 		server.on('published', (packet, client) => {
+
+      if(packet.payload === 'rfid') {
+        // http mongoose store rfid no.
+      }
+      
 			return logger.verbose(
 				`Payload: ${packet.payload} published on topic: ${packet.topic}`
 			);

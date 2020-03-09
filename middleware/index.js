@@ -20,7 +20,7 @@ exports.verifyAuthentication = async (req, res, next) => {
     return next(error);
   }
 
-  const existingUser = User.findOne({ email: payload.email });
+  const existingUser = await User.findOne({ mobile: payload.mobile });
 
   if(!existingUser) {
     return res.status(404).send({
@@ -30,6 +30,20 @@ exports.verifyAuthentication = async (req, res, next) => {
       }
     });
   }
-  res.locals.user = existingUser[0];
+  res.locals.user = existingUser;
+  next();
+};
+
+exports.verifyAuthorization = async (req, res, next) => {
+  const { mobile } = req.body;
+
+  if(res.locals.user.mobile !== mobile) {
+    return res.status(403).send({
+      error: {
+        status: res.statusCode,
+        message: 'User unauthorized to perform this action.',
+      },
+    });
+  }
   next();
 };
