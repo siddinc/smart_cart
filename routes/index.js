@@ -1,7 +1,7 @@
 'use strict';
 
 const router = require('express').Router();
-const { /*signUp,*/ signIn, stopCart, postItem, getItems, deleteItem } = require('../controllers/index');
+const { signIn, stopCart, postItem, getItems, deleteItem } = require('../controllers/index');
 const { verifyAuthentication } = require('../middleware/index');
 
 // router.post('/sign_up', signUp);

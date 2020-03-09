@@ -30,7 +30,6 @@ exports.verifyAuthentication = async (req, res, next) => {
       }
     });
   }
-  console.log(existingUser);
   res.locals.user = existingUser[0];
   next();
 };

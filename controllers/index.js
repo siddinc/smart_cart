@@ -1,7 +1,5 @@
 'use strict';
 
-const axios = require('axios');
-const mqtt = require('mqtt');
 const Cart = require('../models/cart');
 const Item = require('../models/item');
 const User = require('../models/user');
@@ -154,7 +152,7 @@ module.exports = {
 
     res.status(200).send({
       status: res.statusCode,
-      message: `Items retrieved successfully ${cart.userEmail}.`,
+      message: `Items retrieved successfully for ${cart.userEmail}.`,
       data: {
         items: cart.items,
       },
