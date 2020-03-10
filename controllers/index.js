@@ -90,9 +90,8 @@ module.exports = {
 
   postItem: async (req, res, next) => { // cartId, itemId
     const { cartId, itemId } = req.body;
-    let cart = await Cart.findOne({ cartId });
     let item = await Item.findOne({ itemId });
-
+    
     if (!item) {
       return res.status(404).send({
         error: {
@@ -101,9 +100,8 @@ module.exports = {
         },
       });
     }
-
-    cart.items.push(item);
-    cart = await cart.save();
+    
+    let cart = await Cart.findOneAndUpdate({ cartId }, { $push: { items: item } });
 
     res.status(201).send({
       status: res.statusCode,
@@ -112,13 +110,16 @@ module.exports = {
   },
 
   getItems: async (req, res, next) => {
-    let cart = await Cart.findOne({ cartId: res.locals.user.cartId })
+    let cart = await Cart.findOne(
+      { cartId: "n7EWpiv29zb7GjXctQUKSh" },
+      { 'items._id': 0, 'items.__v': 0, 'items.createdAt': 0, 'items.updatedAt': 0 },
+    );
 
     if(cart.items.length === 0) {
       return res.status(200).send({
         status: res.statusCode,
         message: `No items present in cart.`,
-      });  
+      });
     }
 
     res.status(200).send({
@@ -132,21 +133,24 @@ module.exports = {
 
   deleteItem: async (req, res, next) => { // mobile, itemId
     const { itemId } = req.body;
-    let cart = await Cart.findOne({ cartId: res.locals.user.cartId })
+    let cart = await Cart.findOneAndUpdate({ cartId: res.locals.user.cartId }, { $pull: { items: { itemId }} }, { new: true });
 
-    if(cart.items.length === 0) {
-      return res.status(200).send({
-        status: res.statusCode,
-        message: `No items present in cart.`,
-      });
-    }
+    // if(cart.items.length === 0) {
+    //   return res.status(200).send({
+    //     status: res.statusCode,
+    //     message: `No items present in cart.`,
+    //   });
+    // }
 
-    cart.items = cart.items.filter(item => item.itemId !== itemId);
-    cart = await cart.save();
+    // cart.items = cart.items.filter(item => item.itemId !== itemId);
+    // cart = await cart.save();
 
     res.status(200).send({
       status: res.statusCode,
       message: `Item deleted successfully.`,
+      data: {
+        itemsRemaining: cart.items,
+      }
     });
   },
 };

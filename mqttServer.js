@@ -2,6 +2,7 @@
 
 const ip = require('ip');
 const mosca = require('mosca');
+const Cart = require('./models/cart');
 
 const { mqttServerPort } = require('./config/index');
 const { logger } = require('./utils/logger');
@@ -24,7 +25,7 @@ module.exports = {
 			});
 		});
 
-		server.on('clientConnected', async client => {
+		server.on('clientConnected', client => {
 			return logger.info(`Client connected: ${client.id}`);
 		});
 
@@ -32,12 +33,15 @@ module.exports = {
 			return logger.warn(`Client disconnected: ${client.id}`);
 		});
 
-		server.on('published', (packet, client) => {
-
-      if(packet.payload === 'rfid') {
-        // http mongoose store rfid no.
+		server.on('published', async (packet, client) => {
+			if (packet.topic === 'rfid') {
+        console.log("meow");
+        let cart = await Cart.findOne({ cartId: "n7EWpiv29zb7GjXctQUKSh" });
+        cart.items.push({ itemId: packet.payload });
+        cart = await cart.save();
+        console.log("done");
       }
-      
+
 			return logger.verbose(
 				`Payload: ${packet.payload} published on topic: ${packet.topic}`
 			);

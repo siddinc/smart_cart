@@ -28,8 +28,8 @@ const itemSchema = new mongoose.Schema(
 			default: undefined,
 		},
 		image: {
-			type: Array,
-			default: undefined,
+			data: Buffer,
+			contentType: String,
 		},
 	},
 	{ timestamps: true }

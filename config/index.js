@@ -14,7 +14,7 @@ const config = {
   mqttServerPort: Number(process.env.MQTT_SERVER_PORT) || Number(process.env.MQTT_SERVER_PORT),
   jwtSecret: process.env.JWT_SECRET,
   dbConnectionURL: process.env.DB_CONNECTION_URL,
-  mqttServerUrl: process.env.MQTT_SERVER_URL,
+  mqttServerURL: process.env.MQTT_SERVER_URL,
 };
 
 module.exports = config;

@@ -20,13 +20,13 @@ const items = [
 
 const seed = async () => {
   try {
-    // return await Item.create(items);
-    for(let i=0; i<3; i++) {
-      cart = Cart.create({
-        cartId: generateRandomUuid(),
-        taken: false
-      });
-    }
+    return await Item.create(items);
+    // for(let i=0; i<3; i++) {
+    //   cart = Cart.create({
+    //     cartId: generateRandomUuid(),
+    //     taken: false
+    //   });
+    // }
   } catch(error) {
     console.log(error);
   }

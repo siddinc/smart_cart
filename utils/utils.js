@@ -1,7 +1,7 @@
 const shortUuid = require('short-uuid');
 const jwt = require('jsonwebtoken');
 const mqtt = require('mqtt');
-const { jwtSecret, mqttServerUrl } = require('../config/index');
+const { jwtSecret, mqttServerURL } = require('../config/index');
 
 exports.generateRandomUuid = () => {
 	return shortUuid.generate();
@@ -26,7 +26,7 @@ exports.extractJwt = req => {
 };
 
 exports.publishStopStatus = (cartId, status) => {
-	const client = mqtt.connect(mqttServerUrl);
+	const client = mqtt.connect(mqttServerURL);
 
 	client.on('connect', () => {
 		client.publish(`server/cart/${cartId}`, `${status}`);

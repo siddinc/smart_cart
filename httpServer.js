@@ -4,7 +4,6 @@ const app = require('express')();
 const bodyParser = require('body-parser');
 const ip = require('ip');
 const morgan = require('morgan');
-const dbConnection = require('./config/db');
 const { httpServerPort } = require('./config/index');
 const router = require('./routes/index');
 const httpServerIP = ip.address();
@@ -43,17 +42,6 @@ app.use((err, req, res, next) => {
 
 module.exports = {
 	httpServer: async () => {
-		const dbConn = await dbConnection();
-
-		if (dbConn.status === 1) {
-			console.log({ status: 'DB connection successful' });
-		} else {
-			return console.log({
-				status: 'DB connection unsuccessful',
-				error: dbConn.error,
-			});
-		}
-
 		app.listen(httpServerPort, () => {
 			console.log({
 				status: 'HTTP server listening',
