@@ -3,8 +3,8 @@ const { mqttServer } = require('./mqttServer');
 const { dbConnection } = require('./config/db');
 
 async function main() {
-  await dbConnection();
 	await mqttServer();
+  await dbConnection();
 	await httpServer();
 }
 
