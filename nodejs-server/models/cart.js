@@ -1,3 +1,5 @@
+'use strict';
+
 const mongoose = require('mongoose');
 
 const cartSchema = new mongoose.Schema(
@@ -7,18 +9,18 @@ const cartSchema = new mongoose.Schema(
 			unique: true,
 			required: true,
 		},
-		userEmail: {
-			type: String,
-			unique: true,
+		userMobile: {
+      type: String,
+      default: undefined,
+			// unique: true,
 			// required: true,
 		},
-		items: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: 'Item',
-				default: undefined,
-			},
-		],
+		taken: {
+			type: Boolean,
+			// required: true,
+			default: false,
+		},
+		items: ['Item'],
 	},
 	{ timestamps: true }
 );

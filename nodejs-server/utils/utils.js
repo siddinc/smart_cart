@@ -1,16 +1,9 @@
+'use strict';
+
 const shortUuid = require('short-uuid');
-const bcrypt = require('bcryptjs');
-const mqtt = require('mqtt');
 const jwt = require('jsonwebtoken');
-const { saltRounds, jwtSecret } = require('../config/index');
-
-exports.hashPassword = async inputPassword => {
-	return bcrypt.hash(inputPassword, saltRounds);
-};
-
-exports.comparePassword = async (inputPassword, hashedPassword) => {
-	return bcrypt.compare(inputPassword, hashedPassword);
-};
+const mqtt = require('mqtt');
+const { jwtSecret, mqttServerURL } = require('../config/index');
 
 exports.generateRandomUuid = () => {
 	return shortUuid.generate();
@@ -34,10 +27,10 @@ exports.extractJwt = req => {
 	return false;
 };
 
-// exports.publishCartDetails = (cartID) => {
-// 	const client = mqtt.connect('mqtt://192.168.43.113');
+exports.publishStopStatus = (cartId, status) => {
+	const client = mqtt.connect(mqttServerURL);
 
-// 	client.on('connect', () => {
-// 		client.publish(`cart/${cartID}`, `${cartIP}`);
-// 	});
-// };
+	client.on('connect', () => {
+		client.publish(`server/cart/${cartId}`, `${status}`);
+	});
+};

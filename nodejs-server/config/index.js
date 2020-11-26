@@ -10,10 +10,11 @@ if (parsedEnv.error) {
 }
 
 const config = {
-  httpServerPort: Number(process.env.HTTP_SERVER_PORT),
-  dbConnectionURL: process.env.DB_CONNECTION_URL,
+  httpServerPort: process.env.PORT || Number(process.env.HTTP_SERVER_PORT),
+  mqttServerPort: Number(process.env.MQTT_SERVER_PORT) || Number(process.env.MQTT_SERVER_PORT),
   jwtSecret: process.env.JWT_SECRET,
-  saltRounds: process.env.SALT_ROUNDS || 10,
+  dbConnectionURL: process.env.DB_CONNECTION_URL,
+  mqttServerURL: process.env.MQTT_SERVER_URL,
 };
 
 module.exports = config;

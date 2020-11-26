@@ -1,36 +1,54 @@
+'use strict';
+
 const mongoose = require("mongoose");
+const fs = require('fs');
+const path = require('path');
 const Cart = require("../models/cart");
 const Item = require("../models/item");
 const { dbConnectionURL } = require('../config/index');
-const { randomUuid } = require('./utils');
+const { generateRandomUuid } = require('./utils');
+const IMAGES_PATH = path.join(__dirname, '../static/images');
 
-mongoose.connect(dbConnectionURL, { useNewUrlParser: true })
-.then(function() {
-  console.log({ status: "DB_CONNECTION_ESTABLISHED" });
-})
-.catch(function(error) {
-  console.log(error);
-});
+mongoose.set('debug', true);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useFindAndModify', false);
 
 const items = [
-  { itemId: "12345", name: "watermelon", price: 120.00, expiryDate: '2020-12-12', manufacturingDate: '2019-01-10' },
-  { itemId: "67890", name: "orange", price: 340.00, expiryDate: '2020-11-23', manufacturingDate: '2019-05-01' },
-  { itemId: "98765", name: "apple", price: 112.00, expiryDate: '2020-10-19', manufacturingDate: '2019-02-09' },
+  { itemId: "12345", name: "watermelon", price: 120.00, expiryDate: '2020-12-12', manufacturingDate: '2019-01-10', image: undefined },
+  { itemId: "12346", name: "apple", price: 340.00, expiryDate: '2020-11-23', manufacturingDate: '2019-05-01', image: undefined },
 ];
 
+const createItems = async (i) => {
+  let image = fs.readFileSync(IMAGES_PATH + `/${i}.jpg`);
+  let base64Image = new Buffer.from(image.toString('base64'), 'base64');
+  items[i].image = base64Image;
+  let item = await Item.create(items[i]);
+};
+
+const createCarts = async () => {
+  for(let i=0; i<3; i++) {
+    let cart = await Cart.create({
+      cartId: generateRandomUuid(),
+      taken: false
+    });
+  }
+};
+
 const seed = async () => {
-  try {
-    return await Item.create(items);
-    // for(let i=0; i<10; i++) {
-    //   await Cart.create({
-    //     cartID: randomUuid(),
-    //     cartIP: `192.168.43.11${i}`
-    //   });
-    // }
-    // return 1;
+  try {  
+    for(let i=0; i<2; i++) {
+      await createItems(i);
+    }
   } catch(error) {
     console.log(error);
   }
 }
 
-seed().then(res => console.log(res));
+mongoose.connect(dbConnectionURL, { useNewUrlParser: true, useUnifiedTopology: true, })
+  .then(() => {
+    console.log({ status: "DB_CONNECTION_ESTABLISHED" });
+    seed().then(() => console.log(1));
+  })
+  .catch(function(error) {
+    console.log(error);
+  });

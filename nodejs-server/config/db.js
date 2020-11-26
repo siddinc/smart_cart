@@ -3,19 +3,22 @@
 const mongoose = require('mongoose');
 const { dbConnectionURL } = require('./index');
 
-// mongoose.set('debug', true);
+mongoose.set('debug', false);
 mongoose.set('useCreateIndex', true);
+mongoose.set('useFindAndModify', false);
 
-async function dbConnection() {
-  try {
-    const dbConn = await mongoose.connect(dbConnectionURL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    return { status: 1, dbConn: dbConn };
-  } catch (error) {
-    return { status: 0, error: error };
-  }
-}
+module.exports = {
+	dbConnection: async () => {
+		try {
+			await mongoose.connect(dbConnectionURL, {
+				useNewUrlParser: true,
+				useUnifiedTopology: true,
+			});
 
-module.exports = dbConnection;
+			console.log({ status: 'DB connection successful' });
+		} catch (error) {
+			// throw new Error('DB connection unsuccessful');
+			console.log(error.message);
+		}
+	},
+};

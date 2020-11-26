@@ -1,3 +1,5 @@
+'use strict';
+
 const mongoose = require('mongoose');
 
 const itemSchema = new mongoose.Schema(
@@ -25,11 +27,11 @@ const itemSchema = new mongoose.Schema(
 		},
 		nutritionalInformation: {
 			type: String,
-			default: undefined,
+      default: undefined,
 		},
 		image: {
-			type: Array,
-			default: undefined,
+      type: Buffer,
+      default: undefined,
 		},
 	},
 	{ timestamps: true }
